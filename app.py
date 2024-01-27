@@ -5,6 +5,8 @@ from flask import Flask, jsonify, request
 from flask import Flask
 from flask_cors import CORS
 
+import uuid
+
 app = Flask(__name__)
 CORS(app, resources={r"/users/*": {"origins": "*"}})
 
@@ -63,8 +65,10 @@ def create_user():
     data = request.get_json()
     logger.info("POST request received to create a new user")
     users = load_users()
+
+    # Generate a UUID for the "id" field
     new_user = {
-        "id": len(users) + 1,
+        "id": str(uuid.uuid4()),  # Generate UUID
         "first_name": data.get("first_name"),
         "last_name": data.get("last_name"),
         "email": data.get("email")
