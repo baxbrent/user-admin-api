@@ -10,5 +10,11 @@
         "first_name": "Jane",
         "last_name": "Doe",
         "email": "jane.doe@example.com"
+    },
+    {
+        "id": 4,
+        "first_name": "Benny",
+        "last_name": "Baxter",
+        "email": "benny@exampl.com"
     }
 ]

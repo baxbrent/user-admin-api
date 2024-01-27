@@ -12,4 +12,4 @@ last_name="$2"
 email="$3"
 
 # Send POST request with provided parameters
-curl -X POST -H "Content-Type: application/json" -d "{\"first_name\": \"$first_name\", \"last_name\": \"$last_name\", \"email\": \"$email\"}" http://localhost:6000/users
+curl -X POST -H "Content-Type: application/json" -d "{\"first_name\": \"$first_name\", \"last_name\": \"$last_name\", \"email\": \"$email\"}" http://localhost:8888/users

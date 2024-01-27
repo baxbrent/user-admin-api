@@ -2,7 +2,11 @@ import logging
 import json
 from flask import Flask, jsonify, request
 
+from flask import Flask
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app, resources={r"/users/*": {"origins": "*"}})
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -105,5 +109,8 @@ def delete_user(user_id):
     return jsonify({"message": "User deleted successfully"})
 
 
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8888)
