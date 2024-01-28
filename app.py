@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/users/*": {"origins": "*"}})
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Define the path to the JSON file
@@ -46,7 +46,7 @@ def get_users():
 # GET a single user by ID
 
 
-@app.route('/users/<int:user_id>', methods=['GET'])
+@app.route('/users/<uuid:user_id>', methods=['GET'])
 def get_user(user_id):
     logger.info(f"GET user with ID: {user_id}")
     users = load_users()
@@ -81,19 +81,26 @@ def create_user():
 # PUT/update an existing user by ID
 
 
-@app.route('/users/<uuid:user_id>', methods=['PUT', 'OPTIONS'])
+@app.route('/users/<string:user_id>', methods=['PUT', 'OPTIONS'])
 def update_user(user_id):
+    logger.debug(
+        f"Update_user request received to update user with ID: {user_id}")
+
     if request.method == 'OPTIONS':
         response = app.make_default_options_response()
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
         response.headers['Access-Control-Allow-Methods'] = 'PUT'
+        logger.info(
+            f"OPTIONS request received to update user with ID: {user_id}")
         return response
 
     if request.method == 'PUT':
         logger.info(f"PUT request received to update user with ID: {user_id}")
         users = load_users()
         user = next((user for user in users if user['id'] == user_id), None)
+        logger.debug(f"User data from next statement: {user}")
+
         if user:
             data = request.get_json()
             user.update({
