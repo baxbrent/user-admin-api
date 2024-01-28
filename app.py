@@ -81,36 +81,52 @@ def create_user():
 # PUT/update an existing user by ID
 
 
-@app.route('/users/<int:user_id>', methods=['PUT'])
+@app.route('/users/<uuid:user_id>', methods=['PUT', 'OPTIONS'])
 def update_user(user_id):
-    logger.info(f"PUT request received to update user with ID: {user_id}")
-    users = load_users()
-    user = next((user for user in users if user['id'] == user_id), None)
-    if user:
-        data = request.get_json()
-        user.update({
-            "first_name": data.get("first_name", user["first_name"]),
-            "last_name": data.get("last_name", user["last_name"]),
-            "email": data.get("email", user["email"])
-        })
-        save_users(users)
-        logger.info(f"User with ID {user_id} updated successfully")
-        return jsonify(user)
-    else:
-        logger.warning(f"User with ID {user_id} not found")
-        return jsonify({"error": "User not found"}), 404
+    if request.method == 'OPTIONS':
+        response = app.make_default_options_response()
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        response.headers['Access-Control-Allow-Methods'] = 'PUT'
+        return response
+
+    if request.method == 'PUT':
+        logger.info(f"PUT request received to update user with ID: {user_id}")
+        users = load_users()
+        user = next((user for user in users if user['id'] == user_id), None)
+        if user:
+            data = request.get_json()
+            user.update({
+                "first_name": data.get("first_name", user["first_name"]),
+                "last_name": data.get("last_name", user["last_name"]),
+                "email": data.get("email", user["email"])
+            })
+            save_users(users)
+            logger.info(f"User with ID {user_id} updated successfully")
+            return jsonify(user)
+        else:
+            logger.warning(f"User with ID {user_id} not found")
+            return jsonify({"error": "User not found"}), 404
 
 # DELETE a user by ID
 
 
-@app.route('/users/<int:user_id>', methods=['DELETE'])
+@app.route('/users/<uuid:user_id>', methods=['DELETE', 'OPTIONS'])
 def delete_user(user_id):
-    logger.info(f"DELETE request received to delete user with ID: {user_id}")
-    users = load_users()
-    users = [user for user in users if user['id'] != user_id]
-    save_users(users)
-    logger.info(f"User with ID {user_id} deleted successfully")
-    return jsonify({"message": "User deleted successfully"})
+    if request.method == 'OPTIONS':
+        response = app.make_default_options_response()
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        response.headers['Access-Control-Allow-Methods'] = 'DELETE'
+        return response
+    if request.method == 'DELETE':
+        logger.info(
+            f"DELETE request received to delete user with ID: {user_id}")
+        users = load_users()
+        users = [user for user in users if user['id'] != user_id]
+        save_users(users)
+        logger.info(f"User with ID {user_id} deleted successfully")
+        return jsonify({"message": "User deleted successfully"})
 
 
 # if __name__ == '__main__':
